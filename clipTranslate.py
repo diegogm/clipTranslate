@@ -1,20 +1,25 @@
 import time
-from googletrans import Translator
+import argparse
+from googletrans import Translator, LANGUAGES
 import pyperclip as clipboard
 
-cache = {}
-
+def validate_languages(src_lang, target_lang):
+    if src_lang not in LANGUAGES.keys():
+        raise ValueError(f"Unsupported source language: {src_lang}. Supported languages are: {', '.join(LANGUAGES.keys())}")
+    if target_lang not in LANGUAGES.keys():
+        raise ValueError(f"Unsupported target language: {target_lang}. Supported languages are: {', '.join(LANGUAGES.keys())}")
 
 def translate_clipboard(src_lang='es', target_lang='en'):
     translator = Translator()
     previous_text = ""
+    cache = {}
 
-    while True:
-        text = clipboard.paste()
+    try:
+        validate_languages(src_lang, target_lang)
 
-        if text != previous_text and text:
-            try:
-
+        while True:
+            text = clipboard.paste()
+            if text != previous_text and text:
                 if text in cache:
                     translated_text = cache[text]
                     cached = True
@@ -25,14 +30,21 @@ def translate_clipboard(src_lang='es', target_lang='en'):
                     cached = False
 
                 clipboard.copy(translated_text)
-
                 print(f'[cache={cached}] Translated: "{translated_text}"')
                 previous_text = translated_text
-            except Exception as e:
-                print("Cannot translate text:", e)
 
-        time.sleep(0.1)
-
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("Translation stopped by user.")
+    except ValueError as ve:
+        print(ve)
+    except Exception as e:
+        print("Cannot translate text:", e)
 
 if __name__ == "__main__":
-    translate_clipboard()
+    parser = argparse.ArgumentParser(description='Translate text from clipboard.')
+    parser.add_argument('--source', '-s', default='es', help='Source language (default: es)')
+    parser.add_argument('--target', '-t', default='en', help='Target language (default: en)')
+
+    args = parser.parse_args()
+    translate_clipboard(src_lang=args.source, target_lang=args.target)
