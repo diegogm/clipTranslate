@@ -6,7 +6,6 @@ This Python application automatically translates text copied to the clipboard us
 
 * **Automatic Translation**: Detects when new text is copied to the clipboard and automatically translates it.
 * **Caching Mechanism**: Saves recently translated phrases to avoid redundant translations and enhance performance.
-Robust Error Handling: Provides feedback on translation failures.
 
 ## Prerequisites
 
@@ -20,12 +19,14 @@ pip install -r requirements.txt
 To run the script, navigate to the directory containing translate_clipboard.py and execute the following command in the terminal:
 
 ```bash
-python translate_clipboard.py
+python translate_clipboard.py --source [source_language_code] --target [target_language_code]
 ```
+
+Replace [source_language_code] and [target_language_code] with the desired ISO language codes to customize the translation languages.
 
 ## Configuration
 
-The default source language is Spanish (es), and the target language is English (en). You can modify these settings by editing the src_lang and target_lang parameters in the translate_clipboard function call within the if __name__ == "__main__": block.
+The default source language is Spanish (es), and the target language is English (en). Modify these settings by passing the desired language codes as arguments when running the script, as shown in the Usage section.
 
 ## License
 This project is open-sourced under the BSD license. See the LICENSE file for more details.
